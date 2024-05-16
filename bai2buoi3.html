@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 2 và 3</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.geometryutil/0.2.0/leaflet.geometryutil.min.js" integrity="sha512-TJ7QmU/WdE4N1J+HgdYoJyexqKuNvz6iQWpZhTvUbCc7P7Nbu75W6apue/dHn1xwSzW9+xkV+ayDRIBc0gfwEg==" crossorigin="anonymous"></script>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        var map = L.map('map').setView([10.0383, 105.7687], 12);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var markersGroup = L.layerGroup().addTo(map); // Nhóm các marker
+        var polylineGroup = L.layerGroup().addTo(map); // Nhóm các Polyline
+
+        var markers = []; // Mảng chứa marker của mỗi đường Polyline
+
+        // Hàm tính và hiển thị khoảng cách giữa hai điểm
+        function calculateDistanceAndShowPopup(polyline) {
+            var latlngs = polyline.getLatLngs(); // Lấy danh sách các điểm của Polyline
+            var startPoint = latlngs[0]; // Điểm đầu tiên của Polyline
+            var endPoint = latlngs[latlngs.length - 1]; // Điểm cuối cùng của Polyline
+
+            // Tính khoảng cách giữa hai điểm
+            var distance = L.GeometryUtil.length([startPoint, endPoint]);
+
+            // Chuyển đổi khoảng cách thành kilômét
+            var distanceInKm = distance / 1000;
+
+            // Hiển thị Popup tại vị trí điểm cuối của Polyline
+            endPoint.bindPopup('Khoảng cách: ' + distanceInKm.toFixed(2) + ' km').openPopup();
+        }
+
+        // Hàm xử lý khi click chuột trên bản đồ
+        function onMapClick(e) {
+            // Tạo marker mới và thêm vào nhóm marker
+            var marker = L.marker(e.latlng);
+            markersGroup.addLayer(marker);
+
+            // Thêm marker vào mảng markers
+            markers.push(marker);
+
+            // Nếu đã có đủ hai marker, tạo một Polyline từ hai marker đầu tiên
+            if (markers.length === 2) {
+                var startPoint = markers[0].getLatLng(); // Tọa độ marker thứ nhất
+                var endPoint = markers[1].getLatLng();  // Tọa độ marker thứ hai
+
+                // Tính khoảng cách giữa hai điểm
+                var distance = startPoint.distanceTo(endPoint);
+
+                // Chuyển đổi khoảng cách thành kilômét
+                var distanceInKm = distance / 1000;
+
+                // Hiển thị Popup tại vị trí điểm cuối của Polyline
+                var popupContent = 'Khoảng cách: ' + distanceInKm.toFixed(2) + ' km';
+                markers[1].bindPopup(popupContent).openPopup();
+
+                // Tạo Polyline từ hai marker và thêm vào nhóm Polyline
+                var polyline = L.polyline([startPoint, endPoint], {color: 'red'}).addTo(polylineGroup);
+
+                // Xóa mảng markers để chuẩn bị cho Polyline tiếp theo
+                markers = [];
+            } else if (markers.length > 2) {
+                // Nếu đã có nhiều hơn hai marker, xóa marker cuối cùng ra khỏi nhóm marker
+                markersGroup.removeLayer(markers.shift());
+            }
+        }
+
+        // Gán sự kiện click chuột cho bản đồ
+        map.on('click', onMapClick);
+    </script>
+</body>
+</html>

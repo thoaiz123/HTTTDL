@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 2</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        var map = L.map('map').setView([10.0383, 105.7687], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    //2 b
+        // Hiển thị Popup với thông tin bao gồm tên và logo Trường Đại học Kỹ thuật– Công nghệ Cần Thơ
+        var universityPopup = L.popup()
+            .setContent('<span style="color: red;"><h3>Trường Đại học Kỹ thuật– Công nghệ Cần Thơ</h3></span><img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Logo_ctuet.png" alt="Logo" width="100" style="display: block; margin: 0 auto;">');
+
+
+        var universityMarker = L.marker([10.04692,105.76797]).addTo(map)
+            .bindPopup(universityPopup);
+        //2 C
+        // Lấy vị trí hiện tại của người dùng và hiển thị trên bản đồ
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
+
+                var userMarker = L.marker([userLat, userLng]).addTo(map);
+                userMarker.bindPopup("<b>Vị trí của bạn</b>").openPopup();
+
+                map.setView([userLat, userLng], 12); // Di chuyển bản đồ đến vị trí của người dùng
+            });
+        } else {
+            alert("Trình duyệt của bạn không hỗ trợ định vị.");
+        }
+        //2 A
+        // Khi click vào bản đồ, hiển thị Popup với tọa độ kinh độ và vĩ độ
+        map.on('click', function (e) {
+            var lat = e.latlng.lat.toFixed(5);
+            var lng = e.latlng.lng.toFixed(5);
+            var popupContent = "<b>Kinh độ:</b> " + lng + "<br><b>Vĩ độ:</b> " + lat;
+            L.popup()
+                .setLatLng(e.latlng)
+                .setContent(popupContent)
+                .openOn(map);
+        });
+    </script>
+</body>
+</html>

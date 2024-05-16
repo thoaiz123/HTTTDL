@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 4</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    var map = L.map('map').setView([10.046871476392315, 105.76783705423102], 12); // Khởi tạo bản đồ Leaflet
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var polyline = L.polyline([], {color: 'blue'}).addTo(map); // Khởi tạo Polyline trống
+
+    map.on('click', function(e) {
+        var marker = L.marker(e.latlng).addTo(map); // Tạo mới marker tại vị trí click
+        polyline.addLatLng(e.latlng); // Thêm tọa độ click vào Polyline
+    });
+
+    map.on('dblclick', function(e) {
+        map.off('click'); // Tắt sự kiện click để ngăn thêm điểm vào Polyline
+    });
+
+</script>
+
+</body>
+</html>

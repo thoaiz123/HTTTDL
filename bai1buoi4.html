@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bài 1</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+    <style>
+        #map { height: 500px; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+    // Khởi tạo bản đồ
+    var map = L.map('map').setView([9.7751613,105.4626529], 9);
+
+    // Thêm bản đồ nền
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Tạo các polygon
+    var circle = L.circle([10.5728977,105.1754284], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 20000 // Độ dài bán kính của hình tròn (đơn vị mét)
+    }).addTo(map);
+
+    var triangle = L.polygon([
+        [10.0342689,105.7163704], // Cần Thơ
+        [10.2374763,106.3343514], // Bến Tre
+        [9.9516097,106.2624536],   // Trà Vinh
+    ],{
+        color: 'blue', // Màu đường viền
+        fillColor: 'blue', // Màu nền
+        fillOpacity: 0.5 // Độ mờ của màu nền
+    }).addTo(map);
+
+
+    var polygon = L.polygon([
+    [9.7442846,105.4430601], // Vị Thanh
+    [9.8643854,106.3442766], // Châu Thành Trà Vinh
+    [9.628887,106.2805796], // Định An Trà Vinh
+    [9.2685426,105.6707276], // Bạc Liêu
+    [9.4107893,104.9422643], // U Minh
+    ], {
+        color: 'purple', // Màu đường viền
+        fillColor: 'purple', // Màu nền
+        fillOpacity: 0.5 // Độ mờ của màu nền
+    }).addTo(map);
+
+
+    // Thêm popup khi click vào polygon
+    circle.bindPopup("I am a circle");
+    triangle.bindPopup("I am a triangle");
+    polygon.bindPopup("I am a polygon");
+</script>
+
+</body>
+</html>

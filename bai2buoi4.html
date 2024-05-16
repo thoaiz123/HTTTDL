@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bài 2</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        #map {
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <script>
+        // Khởi tạo bản đồ
+        var map = L.map('map').setView([10.033, 105.784], 9);
+
+        // Thêm bản đồ nền
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Sự kiện click trên bản đồ
+        map.on('click', function (e) {
+            // Lấy vị trí click
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            var colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'cyan'];
+
+            // Chọn ngẫu nhiên một màu từ mảng
+            var randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+            // Vẽ polygon hình tròn tại vị trí click
+            L.circle([lat, lng], {
+                color: randomColor, // Màu đường viền
+                fillColor: randomColor, // Màu nền
+                fillOpacity: 0.5, // Độ mờ của màu nền
+                radius: 20000 // Độ dài bán kính của hình tròn (đơn vị mét)
+            }).addTo(map);
+        });
+        var housePopup = L.popup()
+            .setLatLng([9.7429363, 106.0453356])
+            .setContent("Nhà em nè!")
+            .openOn(map);
+
+
+    </script>
+
+</body>
+
+</html>
